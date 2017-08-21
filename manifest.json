@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+
+    "name": "SoundCloud Filter",
+    "description": "This extension allows you to filter your SoundCloud feed.",
+    "version": "0.5",
+
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "activeTab"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": ["https://soundcloud.com/*"],
+            "css": ["custom.css"],
+            "js": ["js/jquery.min.js", "js/popup.js", "js/eventPage.js"],
+            "run_at": "document_end"
+        }
+    ]
+}
