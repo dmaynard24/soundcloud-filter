@@ -1,43 +1,49 @@
 $(function() {
-    $(window).on('load', function() {
-        applyFilters();
-
-        // select the target node
-        var target = document.querySelector('.stream .lazyLoadingList__list');
-
+    function init() {
         // create an observer instance
-        var observer = new MutationObserver(function(mutations) {
+        var bodyObserver = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-                    applyFilters();
+                    mutation.addedNodes.forEach(function(element) {
+                        if (element.classList && element.classList.contains('soundList__item')) {
+                            filterOne($(element));
+                        }
+                    });
                 }
             });
         });
 
-        var config = { childList: true };
+        // config for observer
+        var bodyConfig = { childList: true, subtree: true };
 
         // pass in the target node, as well as the observer options
-        observer.observe(target, config);
-    });
+        bodyObserver.observe(document.body, bodyConfig);
+    }
 
-    function applyFilters() {
+    init();
+
+    function filterAll() {
         var sounds = $('.soundList__item');
         sounds.each(function() {
-            var promoted = false;
-            var reposted = false;
-
-            var contextLine = $(this).find('.soundContext__line');
-            var ministats = contextLine.find('.sc-ministats');
-            if (ministats && ministats.hasClass('soundContext__repost')) {
-                reposted = true;
-            }
-            if (contextLine.hasClass('sc-promoted-icon')) {
-                promoted = true;
-            }
-            
-            if (reposted || promoted) {
-                $(this).remove();
-            }
+            filterOne($(this));
         });
+    }
+
+    function filterOne(element) {
+        var promoted = false;
+        var reposted = false;
+
+        var contextLine = element.find('.soundContext__line');
+        var ministats = contextLine.find('.sc-ministats');
+        if (ministats && ministats.hasClass('soundContext__repost')) {
+            reposted = true;
+        }
+        if (contextLine.hasClass('sc-promoted-icon')) {
+            promoted = true;
+        }
+        
+        if (reposted || promoted) {
+            element.remove();
+        }
     }
 });
